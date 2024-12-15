@@ -1,0 +1,52 @@
+general {
+        colors = true
+        interval = 1
+}
+
+order += "volume master"
+order += "wireless _first_"
+order += "ethernet _first_"
+order += "battery all"
+order += "tztime local"
+order += "read_file layout"
+
+wireless _first_ {
+        format_up = "WIFI: (%quality at %essid) %ip"
+        format_down = "WIFI: down"
+}
+
+ethernet _first_ {
+        format_up = "Ethernet: %ip (%speed)"
+        format_down = "Ethernet: down"
+}
+
+battery all {
+        format = "%status %percentage %remaining"
+        last_full_capacity = true
+}
+
+disk "/" {
+        format = "%avail"
+}
+
+load {
+        format = "%1min"
+}
+
+memory {
+        format = "RAM: %used | %available"
+        threshold_degraded = "1G"
+        format_degraded = "MEMORY < %available"
+}
+
+tztime local {
+        format = "%H:%M:%S %d-%m-%Y"
+}
+
+volume master {
+        format = "♪: %volume"
+        format_muted = "♪: muted (%volume)"
+        device = "default"
+        mixer = "Master"
+        mixer_idx = 0
+}

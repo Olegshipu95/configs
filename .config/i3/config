@@ -1,0 +1,179 @@
+# i3 config file (v4)
+# Please see https://i3wm.org/docs/userguide.html for a complete reference!
+
+# Установка модификатора (обычно Mod4 — это клавиша Super/Windows)
+set $mod Mod4
+
+# Шрифт для заголовков окон
+font pango:Monospace 13
+
+# Автозапуск .desktop файлов через dex
+exec_always --no-startup-id dex --autostart --environment i3
+
+# Блокировка экрана перед suspend (используется i3lock)
+exec_always --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+
+# Запуск NetworkManager applet (управление Wi-Fi)
+exec_always --no-startup-id nm-applet
+
+# Управление громкостью через PulseAudio
+set $refresh_i3status killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
+# Перетаскивание плавающих окон с помощью $mod + левая кнопка мыши
+floating_modifier $mod
+
+# Запуск терминала
+bindsym $mod+Return exec i3-sensible-terminal
+
+# Закрытие текущего окна
+bindsym $mod+Shift+q kill
+
+# Запуск dmenu (программа для запуска приложений)
+bindsym $mod+d exec --no-startup-id dmenu_run
+
+# Навигация между окнами
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+
+# Альтернативная навигация с помощью стрелок
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Перемещение окон
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+
+# Альтернативное перемещение с помощью стрелок
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Разделение окон
+bindsym $mod+h split h 
+bindsym $mod+v split v  
+
+# Полноэкранный режим
+bindsym $mod+f fullscreen toggle
+
+# Изменение layout (стек, табы, переключение разделения)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# Переключение между плавающими и тайловыми окнами
+bindsym $mod+Shift+space floating toggle
+
+# Переключение фокуса между плавающими и тайловыми окнами
+bindsym $mod+space focus mode_toggle
+
+# Фокус на родительский контейнер
+bindsym $mod+a focus parent
+
+# Рабочие пространства (workspaces)
+set $ws1 "1: Code"
+set $ws2 "2: Web"
+set $ws3 "3: H-Term"
+set $ws4 "4: V-Term"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10: Qemu"
+
+# Переключение на рабочие пространства
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
+
+# Перемещение окон на другие рабочие пространства
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
+
+# Перезапуск i3 (сохраняет текущую сессию)
+bindsym $mod+Shift+r restart
+
+# Выход из i3 (с подтверждением)
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Вы действительно хотите выйти из i3? Это завершит вашу X сессию.' -B 'Да, выйти' 'i3-msg exit'"
+
+# Режим изменения размера окон
+mode "resize" {
+    bindsym j resize shrink width 10 px or 10 ppt
+    bindsym k resize grow height 10 px or 10 ppt
+    bindsym l resize shrink height 10 px or 10 ppt
+    bindsym semicolon resize grow width 10 px or 10 ppt
+    bindsym Left resize shrink width 10 px or 10 ppt
+    bindsym Down resize grow height 10 px or 10 ppt
+    bindsym Up resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+bindsym $mod+r mode "resize"
+
+exec --no-startup-id while true; do ~/.config/i3status/update_layout.sh; sleep 1; done
+
+# Панель i3bar
+bar {
+    # i3bar_command ~/.config/polybar/launch.sh
+
+    # status_command get_layout.sh
+    status_command i3status
+}
+
+
+# Подключение/отключение VPN
+bindsym $mod+Shift+v exec --no-startup-id ~/.config/i3/vpn-toggle.sh
+
+
+# Настройки тачпада (естественная прокрутка)
+exec_always --no-startup-id ~/.config/i3/enable_natural_scrolling.sh
+
+# Настройка подключения мониторов
+
+exec_always --no-startup-id ~/.config/i3/monitor-hotplug.sh
+
+# Управление яркостью экрана (требуется утилита light)
+bindsym XF86MonBrightnessUp exec --no-startup-id light -A 15
+bindsym XF86MonBrightnessDown exec --no-startup-id light -U 15
+
+# Скриншоты (maim + xclip для копирования в буфер обмена)
+bindsym $mod+Shift+c exec --no-startup-id maim | xclip -selection clipboard -t image/png
+bindsym $mod+Shift+s exec flameshot gui
+
+# Блокировка экрана (xscreensaver)
+bindsym $mod+Control+l exec xscreensaver-command -lock
+
+# Запуск xscreensaver при старте
+exec_always --no-startup-id xscreensaver -no-splash &
+
+# Настройки клавиатуры (раскладка и переключение)
+exec_always --no-startup-id "sleep 1 && setxkbmap -model pc105 -layout us,ru"
+
